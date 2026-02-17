@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ScrollBreaker • Checkout</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div class="topbar">
+    <div class="leftBar">
+      <div class="brand">
+        <img class="appLogo" src="./logo.png" alt="ScrollBreaker Logo">
+        <div>
+          <div class="brandName">ScrollBreaker</div>
+          <div class="brandTagline">Checkout</div>
+        </div>
+      </div>
+
+      <div class="nav">
+        <a class="chip" href="index.html">How it works</a>
+        <a class="chip" href="rewards.html">Rewards</a>
+        <a class="chip" href="dashboard.html">Dashboard</a>
+      </div>
+    </div>
+
+    <div class="rightBar">
+      <div class="badge">Points: <b id="pointsBadge">0</b></div>
+      <div class="badge"><span id="planBadge">Trial</span></div>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="card">
+      <h1>Subscribe to continue</h1>
+      <p class="muted">
+        Your free trial has ended. Subscribe for full access.
+      </p>
+
+      <div class="miniRow">
+        <div class="miniCard">
+          <div class="miniTitle">Plan</div>
+          <div class="miniValue">Pro</div>
+          <div class="miniSub">full access</div>
+        </div>
+        <div class="miniCard">
+          <div class="miniTitle">Price</div>
+          <div class="miniValue">$2.99</div>
+          <div class="miniSub">per month</div>
+        </div>
+        <div class="miniCard">
+          <div class="miniTitle">Cancel</div>
+          <div class="miniValue">Anytime</div>
+          <div class="miniSub">prototype flow</div>
+        </div>
+      </div>
+
+      <h2 style="margin-top:14px;">Payment details</h2>
+      <p class="muted" style="margin-top:-4px;">
+        (Prototype UI) This demo doesn’t process real payments offline.
+      </p>
+
+      <label class="label">Name on card</label>
+      <input type="text" id="ccName" placeholder="Full name">
+
+      <label class="label">Card number</label>
+      <input type="text" id="ccNumber" placeholder="1234 5678 9012 3456">
+
+      <div class="formGrid">
+        <div>
+          <label class="label">Expiry (MM/YY)</label>
+          <input type="text" id="ccExp" placeholder="MM/YY">
+        </div>
+        <div>
+          <label class="label">CVC</label>
+          <input type="text" id="ccCVC" placeholder="123">
+        </div>
+      </div>
+
+      <div style="margin-top:14px;">
+        <button class="btnPrimary" onclick="submitCheckout()">Subscribe $2.99/mo</button>
+        <a class="btnSecondary" href="index.html" style="text-decoration:none;">Back</a>
+      </div>
+
+      <div class="footer">ScrollBreaker Prototype • Checkout</div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

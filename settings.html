@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ScrollBreaker • Set Limits</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div class="topbar">
+    <div class="leftBar">
+      <div class="brand">
+        <img class="appLogo" src="./logo.png" alt="ScrollBreaker Logo">
+        <div>
+          <div class="brandName">ScrollBreaker</div>
+          <div class="brandTagline">Set Limits</div>
+        </div>
+      </div>
+
+      <div class="nav">
+        <a class="chip" href="index.html">How it works</a>
+        <a class="chip" href="dashboard.html">Dashboard</a>
+        <a class="chip" href="settings.html">Set Limits</a>
+        <a class="chip" href="rewards.html">Rewards</a>
+      </div>
+    </div>
+
+    <div class="rightBar">
+      <div class="badge">Points: <b id="pointsBadge">0</b></div>
+      <div class="badge"><span id="planBadge">Trial</span></div>
+      <a class="chip" href="checkout.html">Upgrade</a>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="card">
+      <h1>Set Limits</h1>
+      <p class="muted">
+        (Prototype) These settings describe what the dock should enforce later.
+      </p>
+
+      <div class="grid2">
+        <div class="miniCard">
+          <div style="font-weight:900;">Daily limit</div>
+          <div class="muted" style="margin-top:4px;">
+            Total scrolling allowed for the whole day.
+          </div>
+          <label class="label">Daily limit (minutes)</label>
+          <input type="number" id="dailyLimit" placeholder="Example: 60">
+        </div>
+
+        <div class="miniCard">
+          <div style="font-weight:900;">Session limit</div>
+          <div class="muted" style="margin-top:4px;">
+            Max continuous scrolling before warning.
+          </div>
+          <label class="label">Session limit (minutes)</label>
+          <input type="number" id="sessionLimit" placeholder="Example: 10">
+        </div>
+      </div>
+
+      <div style="margin-top:14px;">
+        <button class="btnPrimary" onclick="saveSettings()">Save Settings</button>
+        <button class="btnSecondary" onclick="resetToday()">Reset Today</button>
+      </div>
+
+      <div class="note">
+        Tip for demo: Set Daily = 30 and Session = 10 so you can hit rewards faster.
+      </div>
+    </div>
+
+    <div class="footer">ScrollBreaker Prototype • Settings</div>
+  </div>
+
+  <script>
+    // settings save lives here (small file-local so you don't need more complexity)
+    function saveSettings(){
+      const d = Number(document.getElementById("dailyLimit").value || 60);
+      const s = Number(document.getElementById("sessionLimit").value || 15);
+      localStorage.setItem("sb_dailyLimit", String(d));
+      localStorage.setItem("sb_sessionLimit", String(s));
+      alert("Saved!");
+    }
+
+    // preload
+    document.addEventListener("DOMContentLoaded", () => {
+      document.getElementById("dailyLimit").value = localStorage.getItem("sb_dailyLimit") || 60;
+      document.getElementById("sessionLimit").value = localStorage.getItem("sb_sessionLimit") || 15;
+    });
+  </script>
+  <script src="app.js"></script>
+</body>
+</html>

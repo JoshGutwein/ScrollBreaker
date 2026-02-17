@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ScrollBreaker • Dashboard</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div class="topbar">
+    <div class="leftBar">
+      <div class="brand">
+        <img class="appLogo" src="./logo.png" alt="ScrollBreaker Logo">
+        <div>
+          <div class="brandName">ScrollBreaker</div>
+          <div class="brandTagline">Dashboard</div>
+        </div>
+      </div>
+
+      <div class="nav">
+        <a class="chip" href="index.html">How it works</a>
+        <a class="chip" href="dashboard.html">Dashboard</a>
+        <a class="chip" href="settings.html">Set Limits</a>
+        <a class="chip" href="rewards.html">Rewards</a>
+      </div>
+    </div>
+
+    <div class="rightBar">
+      <div class="badge">Points: <b id="pointsBadge">0</b></div>
+      <div class="badge"><span id="planBadge">Trial</span></div>
+      <a class="chip" href="checkout.html">Upgrade</a>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="card">
+      <h1>Focus Session</h1>
+      <p class="muted">
+        Enter how many minutes you want to stay off your phone.
+        You only earn points AFTER the session completes.
+        If touch/scroll happens during a minute, that minute earns 0 points.
+      </p>
+
+      <div class="grid2">
+        <div class="miniCard">
+          <h2>Start a session</h2>
+
+          <label class="label">Minutes I don’t want to use my phone</label>
+          <input type="number" id="sessionMinutes" min="1" step="1" placeholder="Example: 10">
+
+          <div style="margin-top:12px;">
+            <button class="btnPrimary" onclick="startSessionFromInput()">Start Session</button>
+            <button class="btnSecondary" onclick="cancelSession()">Cancel Session</button>
+          </div>
+
+          <div class="note" style="margin-top:12px;">
+            Demo mode: buttons below simulate what the dock would detect.
+          </div>
+        </div>
+
+        <div class="miniCard">
+          <h2>Session status</h2>
+
+          <div class="miniRow" style="margin-top:10px;">
+            <div class="miniCard">
+              <div class="miniTitle">Time Left</div>
+              <div class="miniValue"><span id="timeLeft">—</span></div>
+              <div class="miniSub">mm:ss</div>
+            </div>
+
+            <div class="miniCard">
+              <div class="miniTitle">Clean Minutes</div>
+              <div class="miniValue"><span id="cleanMins">0</span></div>
+              <div class="miniSub">will earn points</div>
+            </div>
+
+            <div class="miniCard">
+              <div class="miniTitle">Dirty Minutes</div>
+              <div class="miniValue"><span id="dirtyMins">0</span></div>
+              <div class="miniSub">touch happened</div>
+            </div>
+          </div>
+
+          <div class="note" id="minuteNote" style="margin-top:12px;">
+            Current minute status: <b id="thisMinuteStatus">—</b>
+          </div>
+
+          <div class="note" id="sessionResult" style="display:none; margin-top:12px;"></div>
+        </div>
+      </div>
+
+      <h2 style="margin-top:18px;">Demo dock controls</h2>
+      <p class="muted">Use these only for demo/presentation.</p>
+
+      <div class="heroButtons">
+        <button class="btnSecondary" onclick="demoTouch()">Simulate Touch/Scroll</button>
+        <button class="btnSecondary" onclick="fastForwardMinute()">Fast-forward 60s (demo)</button>
+        <button class="btnSecondary" onclick="resetToday()">Reset Today</button>
+      </div>
+
+      <div class="footer">ScrollBreaker Prototype • Dashboard</div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

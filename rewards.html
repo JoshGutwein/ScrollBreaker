@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ScrollBreaker • Rewards</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div class="topbar">
+    <div class="leftBar">
+      <div class="brand">
+        <img class="appLogo" src="./logo.png" alt="ScrollBreaker Logo">
+        <div>
+          <div class="brandName">ScrollBreaker</div>
+          <div class="brandTagline">Rewards</div>
+        </div>
+      </div>
+
+      <div class="nav">
+        <a class="chip" href="index.html">How it works</a>
+        <a class="chip" href="dashboard.html">Dashboard</a>
+        <a class="chip" href="settings.html">Set Limits</a>
+        <a class="chip" href="rewards.html">Rewards</a>
+      </div>
+    </div>
+
+    <div class="rightBar">
+      <div class="badge">Points: <b id="pointsBadge">0</b></div>
+      <div class="badge"><span id="planBadge">Trial</span></div>
+      <a class="chip" href="checkout.html">Upgrade</a>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="card">
+      <h1>Rewards</h1>
+      <p class="muted">
+        Unlock rewards at milestones. Once unlocked, tap “Reveal Code”.
+      </p>
+
+      <div class="miniRow">
+        <div class="miniCard">
+          <div class="miniTitle">Your Points</div>
+          <div class="miniValue"><span id="totalPoints">0</span></div>
+          <div class="miniSub">milestone unlocks</div>
+        </div>
+        <div class="miniCard">
+          <div class="miniTitle">Next Milestone</div>
+          <div class="miniValue" id="nextMilestone">50</div>
+          <div class="miniSub">points needed</div>
+        </div>
+        <div class="miniCard">
+          <div class="miniTitle">Codes</div>
+          <div class="miniValue">3</div>
+          <div class="miniSub">possible rewards</div>
+        </div>
+      </div>
+
+      <div class="grid2">
+        <div>
+          <div class="rewardCard" id="reward50">
+            <div>
+              <div class="rewardTitle">⭐ Starbucks</div>
+              <div class="muted">Unlocks at <b>50</b> points</div>
+            </div>
+            <button class="btnSecondary" onclick="revealMilestone(50,'starbucks')">Reveal Code</button>
+          </div>
+
+          <div class="rewardCard" id="reward100">
+            <div>
+              <div class="rewardTitle">🍩 Dunkin</div>
+              <div class="muted">Unlocks at <b>100</b> points</div>
+            </div>
+            <button class="btnSecondary" onclick="revealMilestone(100,'dunkin')">Reveal Code</button>
+          </div>
+
+          <div class="rewardCard" id="reward150">
+            <div>
+              <div class="rewardTitle">🛒 Amazon</div>
+              <div class="muted">Unlocks at <b>150</b> points</div>
+            </div>
+            <button class="btnSecondary" onclick="revealMilestone(150,'amazon')">Reveal Code</button>
+          </div>
+
+          <div class="note">
+            These are prototype codes for demo/judging.
+          </div>
+        </div>
+
+        <div class="miniCard" style="text-align:left;">
+          <h2>Your unlocked codes</h2>
+          <p class="muted" style="margin-top:-6px;">Codes appear after you reveal them.</p>
+
+          <div style="margin-top:10px;">
+            <div class="miniTitle">Starbucks</div>
+            <div class="codeBox"><span id="code_starbucks">—</span></div>
+          </div>
+
+          <div style="margin-top:10px;">
+            <div class="miniTitle">Dunkin</div>
+            <div class="codeBox"><span id="code_dunkin">—</span></div>
+          </div>
+
+          <div style="margin-top:10px;">
+            <div class="miniTitle">Amazon</div>
+            <div class="codeBox"><span id="code_amazon">—</span></div>
+          </div>
+
+          <div style="margin-top:12px;">
+            <button class="btnSecondary" onclick="copyAllCodes()">Copy Codes</button>
+            <button class="btnSecondary" onclick="resetToday()">Reset Today</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer">ScrollBreaker Prototype • Rewards</div>
+  </div>
+
+  <script src="app.js"></script>
+  <script>
+    // Next milestone display
+    function updateNext(){
+      const p = Number(localStorage.getItem("sb_points") || 0);
+      let next = 50;
+      if (p >= 150) next = "All unlocked";
+      else if (p >= 100) next = 150;
+      else if (p >= 50) next = 100;
+      document.getElementById("nextMilestone").innerText = next;
+    }
+    updateNext();
+  </script>
+</body>
+</html>
