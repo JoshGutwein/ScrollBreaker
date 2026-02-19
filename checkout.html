@@ -35,17 +35,15 @@
   <div class="container">
     <div class="card">
       <h1>$2.99 / month</h1>
-      <p class="muted">
-        Prototype checkout UI. Real payments would use Stripe on a real server.
-      </p>
+      <p class="muted">Prototype checkout UI (offline). Real payments would use Stripe on a server.</p>
 
       <div class="grid2">
         <div class="miniCard">
           <h2>What you get</h2>
           <div class="steps">
-            <div class="step"><div class="stepNum">✓</div><div><b>Streak tracking</b><div class="muted">Keep your habit alive.</div></div></div>
-            <div class="step"><div class="stepNum">✓</div><div><b>Time-weighted points</b><div class="muted">Bedtime + school/work bonuses.</div></div></div>
-            <div class="step"><div class="stepNum">✓</div><div><b>Rewards</b><div class="muted">Milestone unlocks.</div></div></div>
+            <div class="step"><div class="stepNum">✓</div><div><b>Streak tracking</b><div class="muted">Daily consistency.</div></div></div>
+            <div class="step"><div class="stepNum">✓</div><div><b>Time-weighted points</b><div class="muted">Bedtime/work bonuses.</div></div></div>
+            <div class="step"><div class="stepNum">✓</div><div><b>Rewards</b><div class="muted">Milestone codes.</div></div></div>
           </div>
         </div>
 
@@ -71,12 +69,10 @@
 
           <div class="heroButtons">
             <button class="btnPrimary" onclick="submitCheckout()">Submit (Prototype)</button>
-            <button class="btnSecondary" onclick="resetAll()">Reset All</button>
+            <button class="btnSecondary" onclick="resetAll()">Reset</button>
           </div>
 
-          <div class="note">
-            For a real launch: Stripe checkout + server-side verification.
-          </div>
+          <div class="note">For real launch: Stripe Checkout + server verification.</div>
         </div>
       </div>
 
