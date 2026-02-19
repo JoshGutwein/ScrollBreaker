@@ -1,41 +1,92 @@
-<h1>Dock the Screen, Live the Scene</h1>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Being Present • Home</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
 
-<p class="muted">
-Being Present is a smart MagSafe charging dock designed to transform phone habits into moments of intentional presence.
-</p>
+  <div class="topbar">
+    <div class="leftBar">
+      <div class="brand">
+        <img class="appLogo" src="logo.png" alt="Being Present Logo">
+        <div>
+          <div class="brandName">Being Present</div>
+          <div class="brandTagline">Dock the Screen, Live the Scene</div>
+        </div>
+      </div>
 
-<div class="steps">
+      <div class="nav">
+        <a class="chip" href="index.html">Home</a>
+        <a class="chip" href="dashboard.html">Dashboard</a>
+        <a class="chip" href="settings.html">Settings</a>
+        <a class="chip" href="rewards.html">Rewards</a>
+      </div>
+    </div>
 
-<div class="step">
-<div class="stepNum">1</div>
-<div>
-<b>Dock your phone</b>
-<div class="muted">Charging becomes a presence trigger.</div>
-</div>
-</div>
+    <div class="rightBar">
+      <div class="badge">Points: <b id="pointsBadge">0</b></div>
+      <div class="badge">Streak: <b id="streakBadge">0</b>d</div>
+      <div class="badge">Today: <b id="todayMinsBadge">0</b>m</div>
+      <a class="chip" href="checkout.html">Pricing</a>
+    </div>
+  </div>
 
-<div class="step">
-<div class="stepNum">2</div>
-<div>
-<b>Enter Presence Mode</b>
-<div class="muted">Nature visuals, calming photos, positive messages.</div>
-</div>
-</div>
+  <div class="container">
+    <div class="card">
+      <h1>Dock the Screen, Live the Scene</h1>
+      <p class="muted">
+        Being Present is a MagSafe charging dock that encourages healthier phone habits without forcing anything.
+        Docking transforms your phone into a calmer, limited experience (nature, photos, positive prompts) and rewards real presence.
+      </p>
 
-<div class="step">
-<div class="stepNum">3</div>
-<div>
-<b>Earn Focus Points</b>
-<div class="muted">Reward distraction-free time.</div>
-</div>
-</div>
+      <div class="steps">
+        <div class="step">
+          <div class="stepNum">1</div>
+          <div>
+            <b>Dock your phone</b>
+            <div class="muted">Charging becomes a presence trigger, not another scroll trigger.</div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="stepNum">2</div>
+          <div>
+            <b>Earn points for clean minutes</b>
+            <div class="muted">Touch/scroll makes that minute “dirty” and worth 0 points.</div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="stepNum">3</div>
+          <div>
+            <b>Time-weighted rewards</b>
+            <div class="muted">Bedtime and school/work windows can give bonus points.</div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="stepNum">4</div>
+          <div>
+            <b>Build a daily streak</b>
+            <div class="muted">Hit 60 clean minutes/day (configurable) to keep the streak alive.</div>
+          </div>
+        </div>
+      </div>
 
-<div class="step">
-<div class="stepNum">4</div>
-<div>
-<b>Build Daily Streaks</b>
-<div class="muted">Consistency strengthens habits.</div>
-</div>
-</div>
+      <div class="note">
+        Use the Dashboard to simulate docking sessions for your demo.
+      </div>
 
-</div>
+      <div class="heroButtons">
+        <a class="btnPrimary" href="dashboard.html" style="text-decoration:none;">Start a Session</a>
+        <a class="btnSecondary" href="settings.html" style="text-decoration:none;">Tune Bonuses</a>
+        <a class="btnSecondary" href="rewards.html" style="text-decoration:none;">View Rewards</a>
+      </div>
+
+      <div class="footer">Being Present Prototype • Offline Web App</div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
