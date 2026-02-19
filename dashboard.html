@@ -1,31 +1,120 @@
-<h1>Presence Session</h1>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Being Present • Dashboard</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
 
-<p class="muted">
-Place your phone on the dock and let presence mode take over.
-Points are earned only from completed clean minutes.
-</p>
+  <div class="topbar">
+    <div class="leftBar">
+      <div class="brand">
+        <img class="appLogo" src="logo.png" alt="Being Present Logo">
+        <div>
+          <div class="brandName">Being Present</div>
+          <div class="brandTagline">Dashboard</div>
+        </div>
+      </div>
 
-<div class="miniRow">
+      <div class="nav">
+        <a class="chip" href="index.html">Home</a>
+        <a class="chip" href="dashboard.html">Dashboard</a>
+        <a class="chip" href="settings.html">Settings</a>
+        <a class="chip" href="rewards.html">Rewards</a>
+      </div>
+    </div>
 
-<div class="miniCard">
-<div class="miniTitle">Docked Today</div>
-<div class="miniValue"><span id="dockToday">0</span> min</div>
-</div>
+    <div class="rightBar">
+      <div class="badge">Points: <b id="pointsBadge">0</b></div>
+      <div class="badge">Streak: <b id="streakBadge">0</b>d</div>
+      <div class="badge">Today: <b id="todayMinsBadge">0</b>m</div>
+      <a class="chip" href="checkout.html">Pricing</a>
+    </div>
+  </div>
 
-<div class="miniCard">
-<div class="miniTitle">Daily Streak</div>
-<div class="miniValue"><span id="streak">0</span> days</div>
-</div>
+  <div class="container">
+    <div class="card">
+      <h1>Presence Session</h1>
+      <p class="muted">
+        Enter minutes you want to stay off your phone.
+        You earn points only for clean minutes (no touch). Bonuses depend on time-of-day.
+      </p>
 
-<div class="miniCard">
-<div class="miniTitle">Points Earned</div>
-<div class="miniValue"><span id="points">0</span></div>
-</div>
+      <div class="miniRow">
+        <div class="miniCard">
+          <div class="miniTitle">Today Clean Minutes</div>
+          <div class="miniValue"><span id="todayCleanMins">0</span>m</div>
+          <div class="miniSub">counts toward streak</div>
+        </div>
+        <div class="miniCard">
+          <div class="miniTitle">Daily Streak</div>
+          <div class="miniValue"><span id="streakDays">0</span></div>
+          <div class="miniSub">days in a row</div>
+        </div>
+        <div class="miniCard">
+          <div class="miniTitle">Total Points</div>
+          <div class="miniValue"><span id="pointsTotal">0</span></div>
+          <div class="miniSub" id="multNow">Right now: 1x</div>
+        </div>
+      </div>
 
-</div>
+      <div class="grid2">
+        <div class="miniCard">
+          <h2>Start a session</h2>
+          <label class="label">Minutes I don’t want to use my phone</label>
+          <input type="number" id="sessionMinutes" min="1" step="1" placeholder="Example: 10">
 
-<div class="heroButtons">
-<button onclick="demoDockMinute()">+1 Dock Minute</button>
-<button onclick="demoUndock()">Simulate Undock</button>
-<button onclick="resetAll()">Reset</button>
-</div>
+          <div class="heroButtons">
+            <button class="btnPrimary" onclick="startSessionFromInput()">Start Session</button>
+            <button class="btnSecondary" onclick="cancelSession()">End / Undock</button>
+            <button class="btnSecondary" onclick="resetAll()">Reset All</button>
+          </div>
+
+          <div class="note">
+            Demo: simulate “touch” to make the current minute dirty (0 points).
+          </div>
+        </div>
+
+        <div class="miniCard">
+          <h2>Session status</h2>
+
+          <div class="miniRow" style="margin-top:10px;">
+            <div class="miniCard">
+              <div class="miniTitle">Time Left</div>
+              <div class="miniValue"><span id="timeLeft">—</span></div>
+              <div class="miniSub">mm:ss</div>
+            </div>
+            <div class="miniCard">
+              <div class="miniTitle">Clean Minutes</div>
+              <div class="miniValue"><span id="cleanMins">0</span></div>
+              <div class="miniSub">earned</div>
+            </div>
+            <div class="miniCard">
+              <div class="miniTitle">Dirty Minutes</div>
+              <div class="miniValue"><span id="dirtyMins">0</span></div>
+              <div class="miniSub">0 points</div>
+            </div>
+          </div>
+
+          <div class="note">
+            Current minute: <b id="thisMinuteStatus">—</b>
+          </div>
+
+          <div class="heroButtons">
+            <button class="btnSecondary" onclick="demoTouch()">Simulate Touch</button>
+            <button class="btnSecondary" onclick="fastForwardMinute()">Fast-forward 60s</button>
+          </div>
+
+          <div class="note" id="sessionResult" style="display:none;"></div>
+        </div>
+      </div>
+
+      <div class="footer">Being Present Prototype • Dashboard</div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
