@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ScrollBreaker • Set Limits</title>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Being Present • Settings</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -11,84 +11,97 @@
   <div class="topbar">
     <div class="leftBar">
       <div class="brand">
-        <img class="appLogo" src="./logo.png" alt="ScrollBreaker Logo">
+        <img class="appLogo" src="logo.png" alt="Being Present Logo">
         <div>
-          <div class="brandName">ScrollBreaker</div>
-          <div class="brandTagline">Set Limits</div>
+          <div class="brandName">Being Present</div>
+          <div class="brandTagline">Settings</div>
         </div>
       </div>
 
       <div class="nav">
-        <a class="chip" href="index.html">How it works</a>
+        <a class="chip" href="index.html">Home</a>
         <a class="chip" href="dashboard.html">Dashboard</a>
-        <a class="chip" href="settings.html">Set Limits</a>
+        <a class="chip" href="settings.html">Settings</a>
         <a class="chip" href="rewards.html">Rewards</a>
       </div>
     </div>
 
     <div class="rightBar">
       <div class="badge">Points: <b id="pointsBadge">0</b></div>
-      <div class="badge"><span id="planBadge">Trial</span></div>
-      <a class="chip" href="checkout.html">Upgrade</a>
+      <div class="badge">Streak: <b id="streakBadge">0</b>d</div>
+      <div class="badge">Today: <b id="todayMinsBadge">0</b>m</div>
+      <a class="chip" href="checkout.html">Pricing</a>
     </div>
   </div>
 
   <div class="container">
     <div class="card">
-      <h1>Set Limits</h1>
-      <p class="muted">
-        (Prototype) These settings describe what the dock should enforce later.
-      </p>
+      <h1>Settings</h1>
+      <p class="muted">Tune streak requirements + point bonuses/penalties.</p>
 
       <div class="grid2">
         <div class="miniCard">
-          <div style="font-weight:900;">Daily limit</div>
-          <div class="muted" style="margin-top:4px;">
-            Total scrolling allowed for the whole day.
-          </div>
-          <label class="label">Daily limit (minutes)</label>
-          <input type="number" id="dailyLimit" placeholder="Example: 60">
+          <h2>Streak</h2>
+          <label class="label">Minutes per day to keep streak</label>
+          <input type="number" id="streakTarget" min="1" step="1">
+          <div class="note">Default: 60 minutes/day</div>
         </div>
 
         <div class="miniCard">
-          <div style="font-weight:900;">Session limit</div>
-          <div class="muted" style="margin-top:4px;">
-            Max continuous scrolling before warning.
+          <h2>Bedtime bonus</h2>
+          <div class="formGrid">
+            <div>
+              <label class="label">Start hour (0–23)</label>
+              <input type="number" id="bedStart" min="0" max="23">
+            </div>
+            <div>
+              <label class="label">End hour (0–23)</label>
+              <input type="number" id="bedEnd" min="0" max="23">
+            </div>
           </div>
-          <label class="label">Session limit (minutes)</label>
-          <input type="number" id="sessionLimit" placeholder="Example: 10">
+          <label class="label">Multiplier (e.g., 2 = double points)</label>
+          <input type="number" id="bedMult" min="0" step="1">
+          <div class="note">Default: 21–23, 2×</div>
+        </div>
+
+        <div class="miniCard">
+          <h2>Work/School focus bonus</h2>
+          <div class="formGrid">
+            <div>
+              <label class="label">Start hour</label>
+              <input type="number" id="workStart" min="0" max="23">
+            </div>
+            <div>
+              <label class="label">End hour</label>
+              <input type="number" id="workEnd" min="0" max="23">
+            </div>
+          </div>
+          <label class="label">Multiplier</label>
+          <input type="number" id="workMult" min="0" step="1">
+          <div class="note">Default: 8–15, 2×</div>
+        </div>
+
+        <div class="miniCard">
+          <h2>Late-night penalty</h2>
+          <label class="label">Late hour (0 = midnight)</label>
+          <input type="number" id="lateHour" min="0" max="23">
+          <label class="label">Penalty when session ends late (points removed)</label>
+          <input type="number" id="latePenalty" min="0" step="1">
+          <label class="label">Multiplier for minutes after midnight (0 = no points)</label>
+          <input type="number" id="lateMult" min="0" step="1">
+          <div class="note">Default: after 12am removes 10 points, minutes earn 0</div>
         </div>
       </div>
 
-      <div style="margin-top:14px;">
-        <button class="btnPrimary" onclick="saveSettings()">Save Settings</button>
-        <button class="btnSecondary" onclick="resetToday()">Reset Today</button>
+      <div class="heroButtons">
+        <button class="btnPrimary" onclick="saveSettings()">Save</button>
+        <button class="btnSecondary" onclick="resetAll()">Reset All</button>
       </div>
 
-      <div class="note">
-        Tip for demo: Set Daily = 30 and Session = 10 so you can hit rewards faster.
-      </div>
+      <div class="footer">Being Present Prototype • Settings</div>
     </div>
-
-    <div class="footer">ScrollBreaker Prototype • Settings</div>
   </div>
 
-  <script>
-    // settings save lives here (small file-local so you don't need more complexity)
-    function saveSettings(){
-      const d = Number(document.getElementById("dailyLimit").value || 60);
-      const s = Number(document.getElementById("sessionLimit").value || 15);
-      localStorage.setItem("sb_dailyLimit", String(d));
-      localStorage.setItem("sb_sessionLimit", String(s));
-      alert("Saved!");
-    }
-
-    // preload
-    document.addEventListener("DOMContentLoaded", () => {
-      document.getElementById("dailyLimit").value = localStorage.getItem("sb_dailyLimit") || 60;
-      document.getElementById("sessionLimit").value = localStorage.getItem("sb_sessionLimit") || 15;
-    });
-  </script>
   <script src="app.js"></script>
 </body>
 </html>
