@@ -1,24 +1,37 @@
 /* ================== STORAGE KEYS ================== */
-const K_POINTS = "sb_points";
+const K_POINTS = "bp_points";
+const K_STREAK = "bp_streak";
+const K_LAST_DAY = "bp_last_day";          // YYYY-MM-DD
+const K_TODAY_CLEAN_MINS = "bp_today_clean_mins"; // number
 
-const K_TRIAL_START = "sb_trialStartMs";
-const K_TRIAL_POP_SEEN = "sb_trialPopupSeen";
-const K_SUBSCRIBED = "sb_subscribed";
+// Focus session (timer)
+const K_SESS_ACTIVE = "bp_sess_active"; // "true"/"false"
+const K_SESS_REMAIN_SECS = "bp_sess_remain_secs";
+const K_SESS_SEC_IN_MIN = "bp_sess_sec_in_min";
+const K_SESS_THIS_MIN_DIRTY = "bp_sess_this_min_dirty";
+const K_SESS_CLEAN_MINS = "bp_sess_clean_mins";
+const K_SESS_DIRTY_MINS = "bp_sess_dirty_mins";
 
+// Settings
+const K_STREAK_TARGET = "bp_set_streak_target"; // default 60
+const K_BED_START = "bp_set_bed_start";         // default 21 (9pm)
+const K_BED_END = "bp_set_bed_end";             // default 23 (11pm)
+const K_BED_MULT = "bp_set_bed_mult";           // default 2
+
+const K_WORK_START = "bp_set_work_start";       // default 8
+const K_WORK_END = "bp_set_work_end";           // default 15
+const K_WORK_MULT = "bp_set_work_mult";         // default 2
+
+const K_LATE_HOUR = "bp_set_late_hour";         // default 0 (midnight)
+const K_LATE_PENALTY = "bp_set_late_penalty";   // default 10 (points removed when undock after 12)
+const K_LATE_MULT = "bp_set_late_mult";         // default 0 (minutes after midnight earn 0 points)
+
+// Rewards codes
 const K_CODES = {
-  starbucks: "sb_code_starbucks",
-  dunkin: "sb_code_dunkin",
-  amazon: "sb_code_amazon"
+  starbucks: "bp_code_starbucks",
+  dunkin: "bp_code_dunkin",
+  amazon: "bp_code_amazon"
 };
-
-/* Focus session */
-const K_SESS_ACTIVE = "sb_sess_active";             // "true"/"false"
-const K_SESS_TOTAL_MINS = "sb_sess_totalMins";      // number
-const K_SESS_REMAIN_SECS = "sb_sess_remainSecs";    // number
-const K_SESS_SEC_IN_MIN = "sb_sess_secInMin";       // 0..59
-const K_SESS_THIS_MIN_DIRTY = "sb_sess_thisMinDirty"; // "true"/"false"
-const K_SESS_CLEAN_MINS = "sb_sess_cleanMins";      // number
-const K_SESS_DIRTY_MINS = "sb_sess_dirtyMins";      // number
 
 /* ================== HELPERS ================== */
 function getNum(key, fallback=0){
@@ -29,119 +42,113 @@ function getStr(key, fallback=""){
   const v = localStorage.getItem(key);
   return v === null ? fallback : v;
 }
-function setStr(key, v){ localStorage.setItem(key, String(v)); }
 function setNum(key, v){ localStorage.setItem(key, String(Number(v))); }
+function setStr(key, v){ localStorage.setItem(key, String(v)); }
 
 function setText(id, value){
   const el = document.getElementById(id);
   if (el) el.innerText = value;
 }
 
+function pad2(n){ return String(n).padStart(2,"0"); }
 function formatMMSS(totalSeconds){
   const m = Math.floor(totalSeconds / 60);
   const s = Math.max(0, totalSeconds % 60);
-  return `${String(m).padStart(2,"0")}:${String(s).padStart(2,"0")}`;
+  return `${pad2(m)}:${pad2(s)}`;
 }
 
-function daysBetween(msA, msB){
-  return Math.floor(Math.abs(msA - msB) / (1000*60*60*24));
+function todayKey(d=new Date()){
+  return `${d.getFullYear()}-${pad2(d.getMonth()+1)}-${pad2(d.getDate())}`;
 }
 
-/* ================== TRIAL / PAYWALL ================== */
-const TRIAL_DAYS = 7;
+/* ================== SETTINGS DEFAULTS ================== */
+function ensureDefaults(){
+  if (localStorage.getItem(K_STREAK_TARGET) === null) setNum(K_STREAK_TARGET, 60);
 
-function isSubscribed(){
-  return getStr(K_SUBSCRIBED, "false") === "true";
-}
-function trialStarted(){
-  return localStorage.getItem(K_TRIAL_START) !== null;
-}
-function trialDaysLeft(){
-  if (!trialStarted()) return TRIAL_DAYS;
-  const start = getNum(K_TRIAL_START, Date.now());
-  const used = daysBetween(Date.now(), start);
-  return Math.max(0, TRIAL_DAYS - used);
-}
-function isPaywalled(){
-  if (isSubscribed()) return false;
-  if (!trialStarted()) return false;
-  return trialDaysLeft() <= 0;
+  if (localStorage.getItem(K_BED_START) === null) setNum(K_BED_START, 21);
+  if (localStorage.getItem(K_BED_END) === null) setNum(K_BED_END, 23);
+  if (localStorage.getItem(K_BED_MULT) === null) setNum(K_BED_MULT, 2);
+
+  if (localStorage.getItem(K_WORK_START) === null) setNum(K_WORK_START, 8);
+  if (localStorage.getItem(K_WORK_END) === null) setNum(K_WORK_END, 15);
+  if (localStorage.getItem(K_WORK_MULT) === null) setNum(K_WORK_MULT, 2);
+
+  if (localStorage.getItem(K_LATE_HOUR) === null) setNum(K_LATE_HOUR, 0);
+  if (localStorage.getItem(K_LATE_PENALTY) === null) setNum(K_LATE_PENALTY, 10);
+  if (localStorage.getItem(K_LATE_MULT) === null) setNum(K_LATE_MULT, 0);
 }
 
-function enforcePaywall(){
-  const file = (location.pathname.split("/").pop() || "index.html").toLowerCase();
-  if (file === "" || file === "index.html" || file === "checkout.html") return;
-  if (isPaywalled()) location.href = "checkout.html";
-}
+/* ================== DAY ROLLOVER + STREAK ==================
+Rule: if yesterday clean mins >= target, streak +1, else streak resets to 0.
+We check rollover whenever the app opens and whenever a session ticks.
+*/
+function rolloverIfNeeded(){
+  const last = getStr(K_LAST_DAY, "");
+  const today = todayKey();
 
-/* ================== POINTS ================== */
-function points(){ return getNum(K_POINTS, 0); }
-function addPoints(n){
-  setNum(K_POINTS, points() + Number(n));
-}
-
-/* ================== HEADER BADGES ================== */
-function renderHeaderBadges(){
-  setText("pointsBadge", points());
-  const plan = document.getElementById("planBadge");
-  if (!plan) return;
-
-  if (isSubscribed()) plan.innerText = "Pro";
-  else if (!trialStarted()) plan.innerText = "Trial: not started";
-  else {
-    const left = trialDaysLeft();
-    plan.innerText = left > 0 ? `Trial: ${left} day(s) left` : "Trial ended";
-  }
-}
-
-/* ================== REWARDS ================== */
-function makeCode(brand){
-  const n = Math.floor(1000 + Math.random()*9000);
-  return `SB-${brand.toUpperCase()}-${n}`;
-}
-
-function revealMilestone(requiredPoints, brand){
-  if (points() < requiredPoints){
-    alert(`Locked. You need ${requiredPoints} points.`);
+  if (last === "") {
+    setStr(K_LAST_DAY, today);
     return;
   }
-  const key = K_CODES[brand];
-  if (!localStorage.getItem(key)){
-    localStorage.setItem(key, makeCode(brand));
+  if (last === today) return;
+
+  const target = getNum(K_STREAK_TARGET, 60);
+  const yesterdayMins = getNum(K_TODAY_CLEAN_MINS, 0);
+
+  if (yesterdayMins >= target) {
+    setNum(K_STREAK, getNum(K_STREAK, 0) + 1);
+  } else {
+    setNum(K_STREAK, 0);
   }
-  renderRewardsUI();
+
+  // reset for new day
+  setNum(K_TODAY_CLEAN_MINS, 0);
+  setStr(K_LAST_DAY, today);
 }
 
-function renderRewardsUI(){
-  // If rewards page has these IDs, update them
-  setText("totalPoints", points());
-
-  const r50 = document.getElementById("reward50");
-  const r100 = document.getElementById("reward100");
-  const r150 = document.getElementById("reward150");
-
-  if (r50) r50.classList.toggle("locked", points() < 50);
-  if (r100) r100.classList.toggle("locked", points() < 100);
-  if (r150) r150.classList.toggle("locked", points() < 150);
-
-  setText("code_starbucks", localStorage.getItem(K_CODES.starbucks) || "—");
-  setText("code_dunkin", localStorage.getItem(K_CODES.dunkin) || "—");
-  setText("code_amazon", localStorage.getItem(K_CODES.amazon) || "—");
+/* ================== POINTS + MULTIPLIERS ================== */
+function points(){ return getNum(K_POINTS, 0); }
+function addPoints(n){
+  const next = Math.max(0, points() + Number(n));
+  setNum(K_POINTS, next);
 }
 
-function copyAllCodes(){
-  const s = localStorage.getItem(K_CODES.starbucks) || "—";
-  const d = localStorage.getItem(K_CODES.dunkin) || "—";
-  const a = localStorage.getItem(K_CODES.amazon) || "—";
-  navigator.clipboard.writeText(`Starbucks: ${s}\nDunkin: ${d}\nAmazon: ${a}`);
-  alert("Copied codes!");
+function hourNow(){ return new Date().getHours(); }
+
+function inWindow(h, start, end){
+  // start inclusive, end exclusive
+  return h >= start && h < end;
 }
 
-/* ================== FOCUS SESSION LOGIC ==================
-   - user sets minutes
-   - countdown runs
-   - you earn points ONLY at the end
-   - each minute is "clean" unless touch happens during that minute
+function minuteMultiplierByTime(dateObj){
+  const h = dateObj.getHours();
+
+  const bedStart = getNum(K_BED_START, 21);
+  const bedEnd = getNum(K_BED_END, 23);
+  const bedMult = getNum(K_BED_MULT, 2);
+
+  const workStart = getNum(K_WORK_START, 8);
+  const workEnd = getNum(K_WORK_END, 15);
+  const workMult = getNum(K_WORK_MULT, 2);
+
+  const lateHour = getNum(K_LATE_HOUR, 0);
+  const lateMult = getNum(K_LATE_MULT, 0);
+
+  // Late-night rule first
+  if (h >= lateHour && h < 6) return lateMult; // default 0 points between 12am–6am
+
+  // Bedtime bonus
+  if (inWindow(h, bedStart, bedEnd)) return bedMult;
+
+  // Work/school focus bonus
+  if (inWindow(h, workStart, workEnd)) return workMult;
+
+  return 1;
+}
+
+/* ================== FOCUS SESSION ==================
+You earn points only when a clean minute completes (at minute boundary),
+and the multiplier depends on time-of-day for THAT minute.
 */
 function sessActive(){ return getStr(K_SESS_ACTIVE, "false") === "true"; }
 
@@ -151,20 +158,19 @@ function startSession(totalMins){
     alert("Enter a valid number of minutes.");
     return;
   }
+  rolloverIfNeeded();
 
   setStr(K_SESS_ACTIVE, "true");
-  setNum(K_SESS_TOTAL_MINS, mins);
   setNum(K_SESS_REMAIN_SECS, mins * 60);
   setNum(K_SESS_SEC_IN_MIN, 0);
   setStr(K_SESS_THIS_MIN_DIRTY, "false");
   setNum(K_SESS_CLEAN_MINS, 0);
   setNum(K_SESS_DIRTY_MINS, 0);
 
-  setText("sessionResult", "");
   const res = document.getElementById("sessionResult");
-  if (res) res.style.display = "none";
+  if (res) { res.style.display = "none"; res.innerHTML = ""; }
 
-  renderSessionUI();
+  renderAll();
 }
 
 function startSessionFromInput(){
@@ -174,17 +180,20 @@ function startSessionFromInput(){
 }
 
 function cancelSession(){
+  // If they cancel, treat it as "undock now"
+  if (sessActive()) applyLatePenaltyIfNeeded("cancel");
   setStr(K_SESS_ACTIVE, "false");
-  renderSessionUI();
+  renderAll();
 }
 
-function markThisMinuteDirty(){
+function demoTouch(){
   if (!sessActive()) return;
   setStr(K_SESS_THIS_MIN_DIRTY, "true");
-  renderSessionUI();
+  renderAll();
 }
 
 function tickOneSecond(){
+  rolloverIfNeeded();
   if (!sessActive()) return;
 
   let remain = getNum(K_SESS_REMAIN_SECS, 0);
@@ -193,125 +202,145 @@ function tickOneSecond(){
     return;
   }
 
-  // decrement one second
+  // decrement 1 second
   remain -= 1;
   setNum(K_SESS_REMAIN_SECS, remain);
 
   // advance second-in-minute
-  let secInMin = getNum(K_SESS_SEC_IN_MIN, 0);
-  secInMin += 1;
+  let secInMin = getNum(K_SESS_SEC_IN_MIN, 0) + 1;
 
-  if (secInMin >= 60 || remain === 0){
-    // A minute ended (or session ended)
+  const minuteEnded = (secInMin >= 60) || (remain === 0);
+
+  if (minuteEnded){
     const dirty = getStr(K_SESS_THIS_MIN_DIRTY, "false") === "true";
     let cleanM = getNum(K_SESS_CLEAN_MINS, 0);
     let dirtyM = getNum(K_SESS_DIRTY_MINS, 0);
 
-    if (dirty) dirtyM += 1;
-    else cleanM += 1;
+    if (dirty){
+      dirtyM += 1;
+      setNum(K_SESS_DIRTY_MINS, dirtyM);
+    } else {
+      cleanM += 1;
+      setNum(K_SESS_CLEAN_MINS, cleanM);
 
-    setNum(K_SESS_CLEAN_MINS, cleanM);
-    setNum(K_SESS_DIRTY_MINS, dirtyM);
+      // Count toward today clean minutes (streak requirement)
+      setNum(K_TODAY_CLEAN_MINS, getNum(K_TODAY_CLEAN_MINS, 0) + 1);
 
-    // reset minute tracking
+      // Award points for THIS clean minute using time multiplier
+      const mult = minuteMultiplierByTime(new Date());
+      addPoints(mult);
+    }
+
+    // reset per-minute tracking
     setStr(K_SESS_THIS_MIN_DIRTY, "false");
     secInMin = 0;
   }
 
   setNum(K_SESS_SEC_IN_MIN, secInMin);
 
-  // if ended exactly now
   if (remain === 0){
     completeSession();
     return;
   }
 
-  renderSessionUI();
+  renderAll();
 }
 
 function completeSession(){
-  // stop session
+  // Session ends — apply penalty if they undock after midnight rule
+  applyLatePenaltyIfNeeded("complete");
+
   setStr(K_SESS_ACTIVE, "false");
 
   const cleanM = getNum(K_SESS_CLEAN_MINS, 0);
   const dirtyM = getNum(K_SESS_DIRTY_MINS, 0);
 
-  // Award points ONLY NOW
-  if (cleanM > 0) addPoints(cleanM);
-
-  const msg = `Session complete! Clean minutes: ${cleanM} (+${cleanM} points). Dirty minutes: ${dirtyM} (0 points).`;
-
   const res = document.getElementById("sessionResult");
   if (res){
     res.style.display = "block";
-    res.innerHTML = `<b>${msg}</b>`;
-  } else {
-    alert(msg);
+    res.innerHTML = `<b>Session complete!</b><br>
+      Clean minutes: ${cleanM} (earned points)<br>
+      Dirty minutes: ${dirtyM} (0 points)<br>
+      <span class="muted">Points depend on time (bedtime bonus, work/school bonus, late-night rules).</span>`;
   }
 
-  renderHeaderBadges();
-  renderRewardsUI();
-  renderSessionUI();
+  renderAll();
 }
 
-function renderSessionUI(){
-  // Update session widgets if they exist on dashboard
-  const active = sessActive();
-  const remain = getNum(K_SESS_REMAIN_SECS, 0);
-  const cleanM = getNum(K_SESS_CLEAN_MINS, 0);
-  const dirtyM = getNum(K_SESS_DIRTY_MINS, 0);
-  const dirtyThis = getStr(K_SESS_THIS_MIN_DIRTY, "false") === "true";
+function applyLatePenaltyIfNeeded(reason){
+  const h = hourNow();
+  const lateHour = getNum(K_LATE_HOUR, 0);
+  const penalty = getNum(K_LATE_PENALTY, 10);
 
-  setText("timeLeft", active ? formatMMSS(remain) : "—");
-  setText("cleanMins", cleanM);
-  setText("dirtyMins", dirtyM);
-  setText("thisMinuteStatus", active ? (dirtyThis ? "DIRTY (0 points)" : "CLEAN (will earn)") : "—");
+  // "Lose points if take off after 12"
+  if (h >= lateHour && h < 6){
+    addPoints(-penalty);
+    const res = document.getElementById("sessionResult");
+    if (res){
+      res.style.display = "block";
+      res.innerHTML = `<b>Late-night penalty applied</b><br>
+        You ended a session after ${lateHour}:00. (-${penalty} points)<br>
+        <span class="muted">Reason: ${reason}</span>`;
+    }
+  }
 }
 
-let sessionTimer = null;
+let timerHandle = null;
 function ensureTimer(){
-  // only run timer on pages that have session UI OR if session active
   const hasSessionUI = document.getElementById("timeLeft") !== null;
   if (!hasSessionUI && !sessActive()) return;
 
-  if (sessionTimer) return;
-  sessionTimer = setInterval(() => {
+  if (timerHandle) return;
+  timerHandle = setInterval(() => {
     if (sessActive()) tickOneSecond();
-    else renderSessionUI();
+    else renderAll();
   }, 1000);
 }
 
-/* Demo controls */
-function demoTouch(){
-  markThisMinuteDirty();
-}
 function fastForwardMinute(){
   if (!sessActive()){
     alert("Start a session first.");
     return;
   }
-  // tick 60 times quickly
   for (let i=0;i<60;i++) tickOneSecond();
 }
 
-function resetToday(){
-  localStorage.removeItem(K_POINTS);
+/* ================== REWARDS ================== */
+function makeCode(brand){
+  const n = Math.floor(1000 + Math.random()*9000);
+  return `BP-${brand.toUpperCase()}-${n}`;
+}
+function revealMilestone(requiredPoints, brand){
+  if (points() < requiredPoints){
+    alert(`Locked. You need ${requiredPoints} points.`);
+    return;
+  }
+  const key = K_CODES[brand];
+  if (!localStorage.getItem(key)){
+    localStorage.setItem(key, makeCode(brand));
+  }
+  renderRewards();
+}
+function renderRewards(){
+  setText("totalPoints", points());
 
-  // reset rewards codes
-  localStorage.removeItem(K_CODES.starbucks);
-  localStorage.removeItem(K_CODES.dunkin);
-  localStorage.removeItem(K_CODES.amazon);
+  const r50 = document.getElementById("reward50");
+  const r100 = document.getElementById("reward100");
+  const r150 = document.getElementById("reward150");
+  if (r50) r50.classList.toggle("locked", points() < 50);
+  if (r100) r100.classList.toggle("locked", points() < 100);
+  if (r150) r150.classList.toggle("locked", points() < 150);
 
-  // reset session
-  setStr(K_SESS_ACTIVE, "false");
-  setNum(K_SESS_REMAIN_SECS, 0);
-  setNum(K_SESS_SEC_IN_MIN, 0);
-  setStr(K_SESS_THIS_MIN_DIRTY, "false");
-  setNum(K_SESS_CLEAN_MINS, 0);
-  setNum(K_SESS_DIRTY_MINS, 0);
-
-  alert("Reset done.");
-  location.reload();
+  setText("code_starbucks", localStorage.getItem(K_CODES.starbucks) || "—");
+  setText("code_dunkin", localStorage.getItem(K_CODES.dunkin) || "—");
+  setText("code_amazon", localStorage.getItem(K_CODES.amazon) || "—");
+}
+function copyAllCodes(){
+  const s = localStorage.getItem(K_CODES.starbucks) || "—";
+  const d = localStorage.getItem(K_CODES.dunkin) || "—";
+  const a = localStorage.getItem(K_CODES.amazon) || "—";
+  navigator.clipboard.writeText(`Starbucks: ${s}\nDunkin: ${d}\nAmazon: ${a}`);
+  alert("Copied codes!");
 }
 
 /* ================== CHECKOUT (demo) ================== */
@@ -321,35 +350,119 @@ function submitCheckout(){
   const exp = (document.getElementById("ccExp")?.value || "").trim();
   const cvc = (document.getElementById("ccCVC")?.value || "").trim();
 
-  // basic validation (still demo)
   if (!name){ alert("Enter the name on the card."); return; }
   if (num.length < 12){ alert("Enter a valid card number."); return; }
   if (!exp){ alert("Enter expiry (MM/YY)."); return; }
   if (cvc.length < 3){ alert("Enter a valid CVC."); return; }
 
-  setStr(K_SUBSCRIBED, "true");
   alert("Subscription activated (prototype).");
-  location.href = "dashboard.html";
+  // If you later want a real payment flow, you’ll use Stripe on a real server.
 }
 
-/* ================== INIT ================== */
+/* ================== RESET ================== */
+function resetAll(){
+  localStorage.clear();
+  ensureDefaults();
+  alert("Reset done.");
+  location.reload();
+}
+
+/* ================== RENDER ================== */
+function renderHeader(){
+  setText("pointsBadge", points());
+  setText("streakBadge", getNum(K_STREAK, 0));
+  setText("todayMinsBadge", getNum(K_TODAY_CLEAN_MINS, 0));
+}
+
+function renderDashboard(){
+  const active = sessActive();
+  const remain = getNum(K_SESS_REMAIN_SECS, 0);
+  const cleanM = getNum(K_SESS_CLEAN_MINS, 0);
+  const dirtyM = getNum(K_SESS_DIRTY_MINS, 0);
+  const dirtyThis = getStr(K_SESS_THIS_MIN_DIRTY, "false") === "true";
+
+  setText("timeLeft", active ? formatMMSS(remain) : "—");
+  setText("cleanMins", cleanM);
+  setText("dirtyMins", dirtyM);
+  setText("thisMinuteStatus", active ? (dirtyThis ? "DIRTY (0 pts)" : "CLEAN (earns pts)") : "—");
+
+  setText("todayCleanMins", getNum(K_TODAY_CLEAN_MINS, 0));
+  setText("streakDays", getNum(K_STREAK, 0));
+  setText("pointsTotal", points());
+
+  // show current multiplier message
+  const multEl = document.getElementById("multNow");
+  if (multEl){
+    const mult = minuteMultiplierByTime(new Date());
+    multEl.innerText = `Right now: ${mult}x per clean minute`;
+  }
+}
+
+function renderSettings(){
+  const ids = [
+    ["streakTarget", K_STREAK_TARGET],
+    ["bedStart", K_BED_START],
+    ["bedEnd", K_BED_END],
+    ["bedMult", K_BED_MULT],
+    ["workStart", K_WORK_START],
+    ["workEnd", K_WORK_END],
+    ["workMult", K_WORK_MULT],
+    ["lateHour", K_LATE_HOUR],
+    ["latePenalty", K_LATE_PENALTY],
+    ["lateMult", K_LATE_MULT]
+  ];
+  for (const [id, key] of ids){
+    const el = document.getElementById(id);
+    if (el) el.value = getNum(key);
+  }
+}
+
+function saveSettings(){
+  const pairs = [
+    ["streakTarget", K_STREAK_TARGET],
+    ["bedStart", K_BED_START],
+    ["bedEnd", K_BED_END],
+    ["bedMult", K_BED_MULT],
+    ["workStart", K_WORK_START],
+    ["workEnd", K_WORK_END],
+    ["workMult", K_WORK_MULT],
+    ["lateHour", K_LATE_HOUR],
+    ["latePenalty", K_LATE_PENALTY],
+    ["lateMult", K_LATE_MULT]
+  ];
+  for (const [id, key] of pairs){
+    const v = Number(document.getElementById(id)?.value);
+    if (Number.isFinite(v)) setNum(key, v);
+  }
+  alert("Saved settings!");
+  renderAll();
+}
+
+function renderAll(){
+  rolloverIfNeeded();
+  renderHeader();
+  renderDashboard();
+  renderRewards();
+  renderSettings();
+}
+
 document.addEventListener("DOMContentLoaded", () => {
-  enforcePaywall();
-  renderHeaderBadges();
-  renderRewardsUI();
-  renderSessionUI();
+  ensureDefaults();
+  rolloverIfNeeded();
+  renderAll();
   ensureTimer();
 });
 
-/* Expose to HTML */
+/* ================== EXPOSE BUTTONS ================== */
 window.startSessionFromInput = startSessionFromInput;
 window.cancelSession = cancelSession;
-
 window.demoTouch = demoTouch;
 window.fastForwardMinute = fastForwardMinute;
-window.resetToday = resetToday;
 
 window.revealMilestone = revealMilestone;
 window.copyAllCodes = copyAllCodes;
 
+window.saveSettings = saveSettings;
+
 window.submitCheckout = submitCheckout;
+window.resetAll = resetAll;
