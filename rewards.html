@@ -37,25 +37,23 @@
   <div class="container">
     <div class="card">
       <h1>Rewards</h1>
-      <p class="muted">
-        Unlock milestone codes using your points. (Prototype codes for demo.)
-      </p>
+      <p class="muted">Unlock codes with points. (Prototype codes for demo.)</p>
 
       <div class="miniRow">
         <div class="miniCard">
           <div class="miniTitle">Your Points</div>
           <div class="miniValue"><span id="totalPoints">0</span></div>
-          <div class="miniSub">milestone unlocks</div>
+          <div class="miniSub">milestones</div>
         </div>
         <div class="miniCard">
-          <div class="miniTitle">Tip</div>
+          <div class="miniTitle">Bedtime Bonus</div>
           <div class="miniValue">2×</div>
-          <div class="miniSub">dock at bedtime</div>
+          <div class="miniSub">default 9–11pm</div>
         </div>
         <div class="miniCard">
-          <div class="miniTitle">Warning</div>
-          <div class="miniValue">−</div>
-          <div class="miniSub">undock after 12am</div>
+          <div class="miniTitle">Late Penalty</div>
+          <div class="miniValue">−10</div>
+          <div class="miniSub">end after midnight</div>
         </div>
       </div>
 
@@ -66,7 +64,7 @@
               <div class="rewardTitle">⭐ Starbucks</div>
               <div class="muted">Unlocks at <b>50</b> points</div>
             </div>
-            <button class="btnSecondary" onclick="revealMilestone(50,'starbucks')">Reveal Code</button>
+            <button class="btnSecondary" onclick="revealMilestone(50,'starbucks')">Reveal</button>
           </div>
 
           <div class="rewardCard" id="reward100">
@@ -74,7 +72,7 @@
               <div class="rewardTitle">🍩 Dunkin</div>
               <div class="muted">Unlocks at <b>100</b> points</div>
             </div>
-            <button class="btnSecondary" onclick="revealMilestone(100,'dunkin')">Reveal Code</button>
+            <button class="btnSecondary" onclick="revealMilestone(100,'dunkin')">Reveal</button>
           </div>
 
           <div class="rewardCard" id="reward150">
@@ -82,15 +80,13 @@
               <div class="rewardTitle">🛒 Amazon</div>
               <div class="muted">Unlocks at <b>150</b> points</div>
             </div>
-            <button class="btnSecondary" onclick="revealMilestone(150,'amazon')">Reveal Code</button>
+            <button class="btnSecondary" onclick="revealMilestone(150,'amazon')">Reveal</button>
           </div>
 
-          <div class="note">
-            Codes appear after you reveal them.
-          </div>
+          <div class="note">Codes appear on the right after you reveal them.</div>
         </div>
 
-        <div class="miniCard" style="text-align:left;">
+        <div class="miniCard">
           <h2>Your unlocked codes</h2>
 
           <div style="margin-top:10px;">
@@ -110,7 +106,7 @@
 
           <div class="heroButtons">
             <button class="btnSecondary" onclick="copyAllCodes()">Copy Codes</button>
-            <button class="btnSecondary" onclick="resetAll()">Reset All</button>
+            <button class="btnSecondary" onclick="resetAll()">Reset</button>
           </div>
         </div>
       </div>
