@@ -1,107 +1,41 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ScrollBreaker • How it Works</title>
-  <link rel="stylesheet" href="style.css">
-</head>
-<body>
+<h1>Dock the Screen, Live the Scene</h1>
 
-  <div class="topbar">
-    <div class="leftBar">
-      <div class="brand">
-        <img class="appLogo" src="./logo.png" alt="ScrollBreaker Logo">
-        <div>
-          <div class="brandName">ScrollBreaker</div>
-          <div class="brandTagline">Break the Scroll, Reclaim Control.</div>
-        </div>
-      </div>
+<p class="muted">
+Being Present is a smart MagSafe charging dock designed to transform phone habits into moments of intentional presence.
+</p>
 
-      <div class="nav">
-        <a class="chip" href="index.html">How it works</a>
-        <a class="chip" href="dashboard.html">Dashboard</a>
-        <a class="chip" href="settings.html">Set Limits</a>
-        <a class="chip" href="rewards.html">Rewards</a>
-      </div>
-    </div>
+<div class="steps">
 
-    <div class="rightBar">
-      <div class="badge">Points: <b id="pointsBadge">0</b></div>
-      <div class="badge"><span id="planBadge">Trial</span></div>
-      <a class="chip" href="checkout.html">Upgrade</a>
-    </div>
-  </div>
+<div class="step">
+<div class="stepNum">1</div>
+<div>
+<b>Dock your phone</b>
+<div class="muted">Charging becomes a presence trigger.</div>
+</div>
+</div>
 
-  <div class="container">
-    <div class="card">
-      <h1>How ScrollBreaker works</h1>
-      <p class="muted">
-        Screen Time is easy to ignore. ScrollBreaker uses a physical habit (docking/charging) + rewards
-        to make the healthy choice easier.
-      </p>
+<div class="step">
+<div class="stepNum">2</div>
+<div>
+<b>Enter Presence Mode</b>
+<div class="muted">Nature visuals, calming photos, positive messages.</div>
+</div>
+</div>
 
-      <div class="steps">
-        <div class="step">
-          <div class="stepNum">1</div>
-          <div>
-            <div style="font-weight:900;">Set your limits</div>
-            <div class="muted">Daily limit = total allowed today. Session limit = max continuous scrolling.</div>
-          </div>
-        </div>
-        <div class="step">
-          <div class="stepNum">2</div>
-          <div>
-            <div style="font-weight:900;">Earn points for focus</div>
-            <div class="muted">When your phone is docked (and not scrolling), you earn points.</div>
-          </div>
-        </div>
-        <div class="step">
-          <div class="stepNum">3</div>
-          <div>
-            <div style="font-weight:900;">Unlock milestone rewards</div>
-            <div class="muted">Hit 50/100/150 points to reveal reward codes.</div>
-          </div>
-        </div>
-        <div class="step">
-          <div class="stepNum">4</div>
-          <div>
-            <div style="font-weight:900;">Trial → Subscription</div>
-            <div class="muted">7 days free. Then $2.99/month to continue (prototype checkout).</div>
-          </div>
-        </div>
-      </div>
+<div class="step">
+<div class="stepNum">3</div>
+<div>
+<b>Earn Focus Points</b>
+<div class="muted">Reward distraction-free time.</div>
+</div>
+</div>
 
-      <div class="note">
-        For your demo: use the Dashboard buttons to simulate the dock.
-      </div>
+<div class="step">
+<div class="stepNum">4</div>
+<div>
+<b>Build Daily Streaks</b>
+<div class="muted">Consistency strengthens habits.</div>
+</div>
+</div>
 
-      <div style="margin-top:14px;">
-        <a class="btnPrimary" href="dashboard.html" style="text-decoration:none;">Open Dashboard</a>
-        <a class="btnSecondary" href="rewards.html" style="text-decoration:none;">See Rewards</a>
-      </div>
-    </div>
-
-    <div class="footer">ScrollBreaker Prototype • Offline Web App</div>
-  </div>
-
-  <!-- Trial Modal -->
-  <div class="modalBack" id="trialModalBack">
-    <div class="modal">
-      <h2 id="trialTitle">Start your 7-day free trial</h2>
-      <p class="muted" id="trialDesc">You’ll get full access. After 7 days, it’s $2.99/month to continue.</p>
-
-      <div class="modalRow">
-        <button class="btnPrimary" id="trialMainBtn" onclick="trialMainAction()">Start Free Trial</button>
-        <button class="btnSecondary" onclick="hideTrialPopupForever()">Not now</button>
-      </div>
-
-      <p class="muted" style="margin-top:10px; font-size:13px;" id="trialSmall">
-        Note: once you click, this popup won’t show again.
-      </p>
-    </div>
-  </div>
-
-  <script src="app.js"></script>
-</body>
-</html>
+</div>
