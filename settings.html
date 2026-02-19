@@ -37,14 +37,14 @@
   <div class="container">
     <div class="card">
       <h1>Settings</h1>
-      <p class="muted">Tune streak requirements + point bonuses/penalties.</p>
+      <p class="muted">Adjust streak goals + time-based point bonuses/penalties.</p>
 
       <div class="grid2">
         <div class="miniCard">
-          <h2>Streak</h2>
-          <label class="label">Minutes per day to keep streak</label>
+          <h2>Daily streak goal</h2>
+          <label class="label">Clean minutes per day required</label>
           <input type="number" id="streakTarget" min="1" step="1">
-          <div class="note">Default: 60 minutes/day</div>
+          <div class="note">Default: 60</div>
         </div>
 
         <div class="miniCard">
@@ -59,13 +59,13 @@
               <input type="number" id="bedEnd" min="0" max="23">
             </div>
           </div>
-          <label class="label">Multiplier (e.g., 2 = double points)</label>
+          <label class="label">Multiplier</label>
           <input type="number" id="bedMult" min="0" step="1">
           <div class="note">Default: 21–23, 2×</div>
         </div>
 
         <div class="miniCard">
-          <h2>Work/School focus bonus</h2>
+          <h2>Work/School bonus</h2>
           <div class="formGrid">
             <div>
               <label class="label">Start hour</label>
@@ -82,20 +82,20 @@
         </div>
 
         <div class="miniCard">
-          <h2>Late-night penalty</h2>
+          <h2>Late-night rules</h2>
           <label class="label">Late hour (0 = midnight)</label>
           <input type="number" id="lateHour" min="0" max="23">
-          <label class="label">Penalty when session ends late (points removed)</label>
+          <label class="label">Penalty when ending late (points removed)</label>
           <input type="number" id="latePenalty" min="0" step="1">
           <label class="label">Multiplier for minutes after midnight (0 = no points)</label>
           <input type="number" id="lateMult" min="0" step="1">
-          <div class="note">Default: after 12am removes 10 points, minutes earn 0</div>
+          <div class="note">Default: -10 points on end after midnight; minutes earn 0.</div>
         </div>
       </div>
 
       <div class="heroButtons">
         <button class="btnPrimary" onclick="saveSettings()">Save</button>
-        <button class="btnSecondary" onclick="resetAll()">Reset All</button>
+        <button class="btnSecondary" onclick="resetAll()">Reset</button>
       </div>
 
       <div class="footer">Being Present Prototype • Settings</div>
