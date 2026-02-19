@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ScrollBreaker • Checkout</title>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Being Present • Pricing</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -11,79 +11,76 @@
   <div class="topbar">
     <div class="leftBar">
       <div class="brand">
-        <img class="appLogo" src="./logo.png" alt="ScrollBreaker Logo">
+        <img class="appLogo" src="logo.png" alt="Being Present Logo">
         <div>
-          <div class="brandName">ScrollBreaker</div>
-          <div class="brandTagline">Checkout</div>
+          <div class="brandName">Being Present</div>
+          <div class="brandTagline">Pricing</div>
         </div>
       </div>
 
       <div class="nav">
-        <a class="chip" href="index.html">How it works</a>
-        <a class="chip" href="rewards.html">Rewards</a>
+        <a class="chip" href="index.html">Home</a>
         <a class="chip" href="dashboard.html">Dashboard</a>
+        <a class="chip" href="rewards.html">Rewards</a>
       </div>
     </div>
 
     <div class="rightBar">
       <div class="badge">Points: <b id="pointsBadge">0</b></div>
-      <div class="badge"><span id="planBadge">Trial</span></div>
+      <div class="badge">Streak: <b id="streakBadge">0</b>d</div>
+      <div class="badge">Today: <b id="todayMinsBadge">0</b>m</div>
     </div>
   </div>
 
   <div class="container">
     <div class="card">
-      <h1>Subscribe to continue</h1>
+      <h1>$2.99 / month</h1>
       <p class="muted">
-        Your free trial has ended. Subscribe for full access.
+        Prototype checkout UI. Real payments would use Stripe on a real server.
       </p>
 
-      <div class="miniRow">
+      <div class="grid2">
         <div class="miniCard">
-          <div class="miniTitle">Plan</div>
-          <div class="miniValue">Pro</div>
-          <div class="miniSub">full access</div>
+          <h2>What you get</h2>
+          <div class="steps">
+            <div class="step"><div class="stepNum">✓</div><div><b>Streak tracking</b><div class="muted">Keep your habit alive.</div></div></div>
+            <div class="step"><div class="stepNum">✓</div><div><b>Time-weighted points</b><div class="muted">Bedtime + school/work bonuses.</div></div></div>
+            <div class="step"><div class="stepNum">✓</div><div><b>Rewards</b><div class="muted">Milestone unlocks.</div></div></div>
+          </div>
         </div>
+
         <div class="miniCard">
-          <div class="miniTitle">Price</div>
-          <div class="miniValue">$2.99</div>
-          <div class="miniSub">per month</div>
-        </div>
-        <div class="miniCard">
-          <div class="miniTitle">Cancel</div>
-          <div class="miniValue">Anytime</div>
-          <div class="miniSub">prototype flow</div>
+          <h2>Payment details</h2>
+
+          <label class="label">Name on card</label>
+          <input type="text" id="ccName" placeholder="Full name">
+
+          <label class="label">Card number</label>
+          <input type="text" id="ccNumber" placeholder="1234 5678 9012 3456">
+
+          <div class="formGrid">
+            <div>
+              <label class="label">Expiry (MM/YY)</label>
+              <input type="text" id="ccExp" placeholder="MM/YY">
+            </div>
+            <div>
+              <label class="label">CVC</label>
+              <input type="text" id="ccCVC" placeholder="123">
+            </div>
+          </div>
+
+          <div class="heroButtons">
+            <button class="btnPrimary" onclick="submitCheckout()">Submit (Prototype)</button>
+            <button class="btnSecondary" onclick="resetAll()">Reset All</button>
+          </div>
+
+          <div class="note">
+            For a real launch: Stripe checkout + server-side verification.
+          </div>
         </div>
       </div>
 
-      <h2 style="margin-top:14px;">Payment details</h2>
-      <p class="muted" style="margin-top:-4px;">
-        (Prototype UI) This demo doesn’t process real payments offline.
-      </p>
-
-      <label class="label">Name on card</label>
-      <input type="text" id="ccName" placeholder="Full name">
-
-      <label class="label">Card number</label>
-      <input type="text" id="ccNumber" placeholder="1234 5678 9012 3456">
-
-      <div class="formGrid">
-        <div>
-          <label class="label">Expiry (MM/YY)</label>
-          <input type="text" id="ccExp" placeholder="MM/YY">
-        </div>
-        <div>
-          <label class="label">CVC</label>
-          <input type="text" id="ccCVC" placeholder="123">
-        </div>
-      </div>
-
-      <div style="margin-top:14px;">
-        <button class="btnPrimary" onclick="submitCheckout()">Subscribe $2.99/mo</button>
-        <a class="btnSecondary" href="index.html" style="text-decoration:none;">Back</a>
-      </div>
-
-      <div class="footer">ScrollBreaker Prototype • Checkout</div>
+      <div class="footer">Being Present Prototype • Pricing</div>
     </div>
   </div>
 
