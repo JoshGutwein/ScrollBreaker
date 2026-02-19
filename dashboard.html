@@ -38,8 +38,8 @@
     <div class="card">
       <h1>Presence Session</h1>
       <p class="muted">
-        Enter minutes you want to stay off your phone.
-        You earn points only for clean minutes (no touch). Bonuses depend on time-of-day.
+        Set a session length. You earn points only when a clean minute completes.
+        Bonuses depend on time-of-day. Ending after midnight can apply a penalty.
       </p>
 
       <div class="miniRow">
@@ -56,29 +56,29 @@
         <div class="miniCard">
           <div class="miniTitle">Total Points</div>
           <div class="miniValue"><span id="pointsTotal">0</span></div>
-          <div class="miniSub" id="multNow">Right now: 1x</div>
+          <div class="miniSub" id="multNow">Right now: 1x per clean minute</div>
         </div>
       </div>
 
       <div class="grid2">
         <div class="miniCard">
-          <h2>Start a session</h2>
+          <h2>Start</h2>
           <label class="label">Minutes I don’t want to use my phone</label>
           <input type="number" id="sessionMinutes" min="1" step="1" placeholder="Example: 10">
 
           <div class="heroButtons">
             <button class="btnPrimary" onclick="startSessionFromInput()">Start Session</button>
-            <button class="btnSecondary" onclick="cancelSession()">End / Undock</button>
-            <button class="btnSecondary" onclick="resetAll()">Reset All</button>
+            <button class="btnSecondary" onclick="endSession()">End / Undock</button>
+            <button class="btnSecondary" onclick="resetAll()">Reset</button>
           </div>
 
           <div class="note">
-            Demo: simulate “touch” to make the current minute dirty (0 points).
+            Demo controls: “Touch” makes the current minute dirty (0 points).
           </div>
         </div>
 
         <div class="miniCard">
-          <h2>Session status</h2>
+          <h2>Status</h2>
 
           <div class="miniRow" style="margin-top:10px;">
             <div class="miniCard">
